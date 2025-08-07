@@ -2,10 +2,10 @@ package com.bulut.model;
 
 public class Book {
     private String title;
-    private Author author;
     private String isbn;
+    private Author author;
 
-    public Book(String title, Author author, String isbn) {
+    public Book(String title, String isbn, Author author) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
