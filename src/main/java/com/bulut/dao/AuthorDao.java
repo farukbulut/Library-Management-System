@@ -19,7 +19,7 @@ public class AuthorDao {
     }
 
     public List<Author> getAllAuthors(){
-        return authors;
+        return new ArrayList<>(authors);
     }
 
     public Author searchAuthorById(int id){
@@ -29,18 +29,30 @@ public class AuthorDao {
                 .orElse(null);
     }
 
-    public void update(Author updatedAuthor, int old_id) {
-        if (searchAuthorById(old_id) == null){
+    public void update(Author updatedAuthor) {
+        if (searchAuthorById(updatedAuthor.getId()) == null){
             System.out.println("❌ Yazar bulunamadı!");
             return;
         }
         for (int i = 0; i < authors.size(); i++) {
-            if (authors.get(i).getId() == old_id) {
+            if (authors.get(i).getId() == updatedAuthor.getId()) {
                 authors.set(i, updatedAuthor); // Eski author yerine yeni author'u koy
                 System.out.println("✅ " + updatedAuthor.getName() + " isimli yazar güncellendi!");
                 return;
             }
         }
+    }
+
+    public int count(){
+        return this.authors.size();
+    }
+
+    public List<Author> findByNameContaining(String name) {
+        return authors.stream()
+                .filter(author ->
+                        author.getName().toLowerCase().contains(name.toLowerCase()) ||
+                                author.getLastname().toLowerCase().contains(name.toLowerCase()))
+                .toList();
     }
 
     public void delete(int id){

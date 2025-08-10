@@ -2,23 +2,21 @@ package com.bulut.ui;
 
 import com.bulut.controller.AuthorController;
 import com.bulut.controller.BookController;
+import com.bulut.controller.LoanController;
 import com.bulut.dao.AuthorDao;
 import com.bulut.dao.BookDao;
-import com.bulut.model.Author;
-import com.bulut.model.Book;
-
-import java.time.LocalDate;
-import java.util.List;
 
 public class MenuManager {
     private AuthorController authorController;
     private BookController bookController;
-    public MenuManager(){
-        AuthorDao authorDao = new AuthorDao();
-        BookDao bookDao = new BookDao();
+    private LoanController loanController;
+
+    public MenuManager(AuthorDao authorDao, BookDao bookDao){
         this.authorController = new AuthorController(authorDao);
-        this.bookController = new BookController(bookDao);
+        this.bookController = new BookController(bookDao, authorDao, this.authorController);
+        this.loanController = new LoanController(bookDao, this.bookController);
     }
+
     public int showMainMenu() {
         System.out.println("\n" + "=".repeat(40));
         System.out.println("           ANA MENÜ");
@@ -68,6 +66,7 @@ public class MenuManager {
         System.out.println("2. Yazar Güncelle");
         System.out.println("3. Yazar Sil");
         System.out.println("4. Yazarları Listele");
+        System.out.println("5. Yazar Ara");
         System.out.println("9. Ana Menüye Dön");
         System.out.println("=".repeat(40));
         System.out.print("Seçiminiz: ");
@@ -89,27 +88,8 @@ public class MenuManager {
             case 4:
                 this.authorController.listAllAuthors();
                 break;
-            case 9:
-                System.out.println("Ana menüye dönülüyor...");
-                break;
-            default:
-                System.out.println("❌ Geçersiz seçim! Lütfen menüden bir seçim yapınız.");
-        }
-    }
-
-    private void handleBookMenu(int choice) {
-        switch (choice) {
-            case 1:
-                this.bookController.addBook();
-                break;
-            case 2:
-                this.authorController.updateAuthor();
-                break;
-            case 3:
-                this.authorController.deleteAuthor();
-                break;
-            case 4:
-                this.authorController.listAllAuthors();
+            case 5:
+                this.authorController.searchAuthors();
                 break;
             case 9:
                 System.out.println("Ana menüye dönülüyor...");
@@ -129,12 +109,13 @@ public class MenuManager {
 
     private static int showBookMenu() {
         System.out.println("\n" + "=".repeat(40));
-        System.out.println("         YAZAR İŞLEMLERİ");
+        System.out.println("         KİTAP İŞLEMLERİ");
         System.out.println("=".repeat(40));
         System.out.println("1. Kitap Ekle");
         System.out.println("2. Kitap Güncelle");
         System.out.println("3. Kitap Sil");
         System.out.println("4. Kitap Listele");
+        System.out.println("5. Kitap Ara");
         System.out.println("9. Ana Menüye Dön");
         System.out.println("=".repeat(40));
         System.out.print("Seçiminiz: ");
@@ -142,11 +123,73 @@ public class MenuManager {
         return InputManager.getValidIntInput();
     }
 
+    private void handleBookMenu(int choice) {
+        switch (choice) {
+            case 1:
+                this.bookController.addBook();
+                break;
+            case 2:
+                this.bookController.updateBook();
+                break;
+            case 3:
+                this.bookController.deleteBook();
+                break;
+            case 4:
+                this.bookController.listAllBooks();
+                break;
+            case 5:
+                this.bookController.searchBooks();
+                break;
+            case 9:
+                System.out.println("Ana menüye dönülüyor...");
+                break;
+            default:
+                System.out.println("❌ Geçersiz seçim! Lütfen menüden bir seçim yapınız.");
+        }
+    }
 
+    private void loanOperations() {
+        int choice;
+        do {
+            choice = showLoanMenu();
+            handleLoanMenu(choice);
+        } while (choice != 9);
+    }
 
-    private static void loanOperations() {
-        System.out.println("\n--- ÖDÜNÇ İŞLEMLERİ ---");
-        System.out.println("Bu bölüm henüz geliştirilmemiştir.");
-        System.out.println("Ana menüye dönülüyor...");
+    private static int showLoanMenu() {
+        System.out.println("\n" + "=".repeat(40));
+        System.out.println("         ÖDÜNÇ İŞLEMLERİ");
+        System.out.println("=".repeat(40));
+        System.out.println("1. Kitap Ödünç Ver");
+        System.out.println("2. Kitap İade Al");
+        System.out.println("3. Ödünçte Olan Kitapları Listele");
+        System.out.println("4. Kitap Durumu Sorgula");
+        System.out.println("9. Ana Menüye Dön");
+        System.out.println("=".repeat(40));
+        System.out.print("Seçiminiz: ");
+
+        return InputManager.getValidIntInput();
+    }
+
+    private void handleLoanMenu(int choice) {
+        switch (choice) {
+            case 1:
+                this.loanController.loanBook();
+                break;
+            case 2:
+                this.loanController.returnBook();
+                break;
+            case 3:
+                this.loanController.listLoanedBooks();
+                break;
+            case 4:
+                this.loanController.checkBookStatus();
+                break;
+            case 9:
+                System.out.println("Ana menüye dönülüyor...");
+                break;
+            default:
+                System.out.println("❌ Geçersiz seçim! Lütfen menüden bir seçim yapınız.");
+        }
     }
 }

@@ -1,14 +1,21 @@
 package com.bulut.model;
 
+import java.time.LocalDate;
+
 public class Book {
     private String title;
     private String isbn;
     private Author author;
-
+    private LocalDate loanDate;
+    private boolean borrowed;
     public Book(String title, String isbn, Author author) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
+    }
+
+    public Book(){
+
     }
 
     public String getTitle() {
@@ -31,8 +38,20 @@ public class Book {
         return isbn;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
+    public LocalDate getLoanDate() {
+        return loanDate;
+    }
+
+    public void setLoanDate(LocalDate loanDate) {
+        this.loanDate = loanDate;
+    }
+
+    public boolean isBorrowed() {
+        return borrowed;
+    }
+
+    public void setBorrowed(boolean borrowed) {
+        this.borrowed = borrowed;
     }
 
     @Override

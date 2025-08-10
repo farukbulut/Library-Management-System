@@ -52,7 +52,7 @@ public class AuthorController {
 
         // ID'yi eski tut, diğerlerini güncelle
         Author updatedAuthor = new Author(id, name, lastname, birthdate);
-        authorDao.update(updatedAuthor, id);
+        authorDao.update(updatedAuthor);
     }
 
     public void deleteAuthor() {
@@ -97,5 +97,34 @@ public class AuthorController {
         LocalDate birthdate = InputManager.getValidDateInput();
 
         return  new Author(id, name, lastname, birthdate);
+    }
+
+    public void searchAuthors() {
+        System.out.println("\n--- YAZAR ARAMA ---");
+        System.out.print("Aranacak yazar adı/soyadı (boş bırakırsanız tüm yazarlar listelenir): ");
+        String searchTerm = InputManager.getValidStringInput();
+
+        List<Author> authors = this.authorDao.findByNameContaining(searchTerm);
+
+        if (authors.isEmpty()) {
+            System.out.println("📋 Arama kriterlerine uygun yazar bulunamadı.");
+            return;
+        }
+
+        System.out.println("\nArama Sonuçları:");
+        System.out.println("=".repeat(70));
+        System.out.printf("%-5s | %-20s | %-20s | %s%n", "ID", "AD", "SOYAD", "DOĞUM TARİHİ");
+        System.out.println("=".repeat(70));
+
+        for (Author author : authors) {
+            System.out.printf("%-5d | %-20s | %-20s | %s%n",
+                    author.getId(),
+                    author.getName(),
+                    author.getLastname(),
+                    author.getBirthDate());
+        }
+
+        System.out.println("=".repeat(70));
+        System.out.println("Toplam " + authors.size() + " yazar bulundu.");
     }
 }

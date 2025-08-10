@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class InputManager {
 
-    public static final Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
     // Yardımcı metodlar
 
     public static int getValidIntInput() {
